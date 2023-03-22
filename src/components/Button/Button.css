@@ -1,0 +1,19 @@
+.btn_wrapper {
+    width: 50%;
+    margin: 10px auto 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.generate_btn {
+    font-size: 2rem;
+    background-color: rgba(146, 139, 139, 0.212);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.generate_btn:hover {
+    background-color: grey;
+}
