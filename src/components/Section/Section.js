@@ -3,30 +3,57 @@ import "./Section.css";
 import chroma from "chroma-js";
 import { svgStorage } from "../svg";
 
-const Section = ({ load }) => {
+const Section = ({
+  i,
+  quantity,
+  load,
+  setColors,
+  colors,
+  isLoaded,
+  setIsLoaded,
+}) => {
   const [locked, setLocked] = React.useState(false);
   const [bgColor, setBgColor] = React.useState("white");
+
   const handleClick = (e) => {
     e.preventDefault();
     setLocked((prev) => !prev);
   };
 
   const generateRandomColor = () => {
-    if (!locked) {
-      const hexCodes = "0123456789ABCDEF";
-      let color = "";
-      for (let i = 0; i < 6; i++) {
-        color += hexCodes[Math.floor(Math.random() * hexCodes.length)];
+    if (document.location.hash.length > quantity && !isLoaded) {
+      const hash = document.location.hash.substr(1).split("-");
+      setColors((prev) => [
+        ...prev.map((el, index) => (index === i ? (el = hash[i]) : el)),
+      ]);
+      setBgColor("#" + hash[i]);
+    } else {
+      if (!locked) {
+        const hexCodes = "0123456789ABCDEF";
+        let color = "";
+        for (let i = 0; i < 6; i++) {
+          color += hexCodes[Math.floor(Math.random() * hexCodes.length)];
+        }
+        setBgColor("#" + color);
+        setColors((prev) => [
+          ...prev.map((el, index) => (index === i ? (el = color) : el)),
+        ]);
       }
-      setBgColor("#" + color);
     }
+    setIsLoaded(true);
   };
 
   React.useEffect(() => {
     generateRandomColor();
   }, [load]);
 
-  const luminance = chroma(bgColor).luminance();
+  React.useEffect(() => {
+    if (isLoaded) {
+      document.location.hash = colors.join("-");
+    }
+  }, [colors]);
+
+  const luminance = chroma(bgColor)?.luminance();
 
   return (
     <div
@@ -36,7 +63,10 @@ const Section = ({ load }) => {
         color: luminance > 0.5 ? "black" : "white",
       }}
     >
-      <div className="text">{bgColor}</div>
+      <div className="text">
+        <p onClick={() => navigator.clipboard.writeText(bgColor)}>{bgColor}</p>
+        <p>Click on the color code to copy it!</p>
+      </div>
       <div className="icon" onClick={handleClick}>
         <svg
           fill={luminance > 0.5 ? "black" : "white"}

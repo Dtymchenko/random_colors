@@ -9,6 +9,18 @@
 
 .text, .icon {
     padding: 10px;
+    }
+
+    .text p:first-child {
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+.icon {
     cursor: pointer;
+}
+
+.text {
+    text-align: center;
 }
 
