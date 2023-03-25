@@ -14,6 +14,7 @@ const Section = ({
 }) => {
   const [locked, setLocked] = React.useState(false);
   const [bgColor, setBgColor] = React.useState("white");
+  const spanRef = React.useRef();
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -55,6 +56,14 @@ const Section = ({
 
   const luminance = chroma(bgColor)?.luminance();
 
+  const onClickColor = () => {
+    navigator.clipboard.writeText(bgColor);
+    spanRef.current.classList.add("clicked");
+    setTimeout(() => {
+      spanRef.current.classList.remove("clicked");
+    }, 1000);
+  };
+
   return (
     <div
       className="section_wrapper"
@@ -64,7 +73,12 @@ const Section = ({
       }}
     >
       <div className="text">
-        <p onClick={() => navigator.clipboard.writeText(bgColor)}>{bgColor}</p>
+        <p onClick={onClickColor}>
+          {bgColor}
+          <span ref={spanRef} className="not_clicked">
+            Copied to clipboard
+          </span>
+        </p>
         <p>Click on the color code to copy it!</p>
       </div>
       <div className="icon" onClick={handleClick}>
